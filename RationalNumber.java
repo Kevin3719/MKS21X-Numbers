@@ -14,7 +14,7 @@ public class RationalNumber extends RealNumber
   }
 
   public double getValue(){
-    return numerator / demoninator;
+    return numerator / denominator;
   }
 
   /**
@@ -27,14 +27,14 @@ public class RationalNumber extends RealNumber
   *@return the denominator
   */
   public int getDenominator(){
-    return demoninator;
+    return denominator;
   }
   /**
   *@return a new RationalNumber that has the same numerator
   *and denominator as this RationalNumber but reversed.
   */
   public RationalNumber reciprocal(){
-    return new RationalNumber(demoninator,numerator);
+    return new RationalNumber(denominator,numerator);
   }
   /**
   *@return true when the RationalNumbers have the same numerators and denominators, false otherwise.
@@ -52,9 +52,9 @@ public class RationalNumber extends RealNumber
       return "0";
     }
     if (denominator == 1) {
-      return "" + demoninator;
+      return "" + denominator;
     }
-    return numerator + "/" + demoninator;
+    return numerator + "/" + denominator;
   }
 
   /**Calculate the GCD of two integers.
@@ -63,9 +63,14 @@ public class RationalNumber extends RealNumber
   *@return the value of the GCD
   */
   private static int gcd(int a, int b){
-    /*use euclids method or a better one*/
-    http://sites.math.rutgers.edu/~greenfie/gs2004/euclid.html
-    return 0;
+    int themax = Math.min(a,b);
+    int themin = Max.max(a,b);
+    int save = themax % themin;
+    if (save == themin) {
+      return themin;
+    }
+    return gcd(themin,save);
+
   }
 
   /**
