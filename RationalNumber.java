@@ -11,6 +11,9 @@ public class RationalNumber extends RealNumber
     super(0.0);//this value is ignored!
     numerator = nume;
     denominator = deno;
+    if (deno == 0)
+    {nume = 0;
+      deno = 1;}
   }
 
   public double getValue(){
@@ -40,7 +43,7 @@ public class RationalNumber extends RealNumber
   *@return true when the RationalNumbers have the same numerators and denominators, false otherwise.
   */
   public boolean equals(RationalNumber other){
-    return (this.getValue()).comparedTo(other.getValue()) == 0;
+    return this.getValue() == other.getValue();
   }
 
 
@@ -54,7 +57,11 @@ public class RationalNumber extends RealNumber
     if (denominator == 1) {
       return "" + denominator;
     }
-    return numerator + "/" + denominator;
+    String sign = "";
+    if (numerator * denominator < 0) {
+      sign = "-";
+    }
+    return sign + Math.abs(numerator) + "/" +Math.abs(denominator);
   }
 
   /**Calculate the GCD of two integers.
@@ -63,14 +70,15 @@ public class RationalNumber extends RealNumber
   *@return the value of the GCD
   */
   private static int gcd(int a, int b){
-    int themax = Math.min(a,b);
-    int themin = Max.max(a,b);
-    int save = themax % themin;
-    if (save == themin) {
-      return themin;
+    a = Math.abs(a);
+    b = Math.abs(b);
+    int themax = Math.max(a,b);
+    int themin = Math.min(a,b);
+    int differ = themax - themin;
+    if (themin % differ == 0) {
+      return differ;
     }
-    return gcd(themin,save);
-
+    return gcd(themin,differ);
   }
 
   /**
@@ -79,33 +87,49 @@ public class RationalNumber extends RealNumber
   *reduced after construction.
   */
   private void reduce(){
-
+    int factor = gcd(numerator,denominator);
+    numerator /= factor;
+    denominator /= factor;
   }
   /******************Operations Return a new RationalNumber!!!!****************/
   /**
   *Return a new RationalNumber that is the product of this and the other
   */
   public RationalNumber multiply(RationalNumber other){
-    return null;
+    int outputTop = this.numerator * other.numerator;
+    int outputBot = this.denominator * other.denominator;
+    RationalNumber output = new RationalNumber(outputTop,outputBot);
+    output.reduce();
+    return output;
   }
 
   /**
   *Return a new RationalNumber that is the this divided by the other
   */
   public RationalNumber divide(RationalNumber other){
-    return null;
+    RationalNumber output = this.multiply(other.reciprocal());
+    output.reduce();
+    return output;
   }
 
   /**
   *Return a new RationalNumber that is the sum of this and the other
   */
   public RationalNumber add(RationalNumber other){
-    return null;
+    int outputTop = this.numerator * other.denominator + other.numerator * this.denominator;
+    int outputBot = this.denominator * other.denominator;
+    RationalNumber output = new RationalNumber(outputTop,outputBot);
+    output.reduce();
+    return output;
   }
   /**
   *Return a new RationalNumber that this minus the other
   */
   public RationalNumber subtract(RationalNumber other){
-    return null;
+    int outputTop = this.numerator * other.denominator - other.numerator * this.denominator;
+    int outputBot = this.denominator * other.denominator;
+    RationalNumber output = new RationalNumber(outputTop,outputBot);
+    output.reduce();
+    return output;
   }
 }
