@@ -37,6 +37,6 @@ public class RealNumber{
   }
 
   public String toString(){
-    return ""+value;
+    return ""+ this.getValue();
   }
 }

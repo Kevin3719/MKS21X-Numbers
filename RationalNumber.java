@@ -9,15 +9,19 @@ public class RationalNumber extends RealNumber
   */
   public RationalNumber(int nume, int deno){
     super(0.0);//this value is ignored!
-    numerator = nume;
-    denominator = deno;
-    if (deno == 0)
-    {nume = 0;
-      deno = 1;}
-  }
+    if (deno != 0) {
+      numerator = nume;
+      denominator = deno;
+    this.reduce();
+    }
+    else {
+      numerator = 0;
+      denominator = 1;
+    }
+}
 
   public double getValue(){
-    return numerator / denominator;
+    return numerator / (double)denominator;
   }
 
   /**
@@ -43,7 +47,7 @@ public class RationalNumber extends RealNumber
   *@return true when the RationalNumbers have the same numerators and denominators, false otherwise.
   */
   public boolean equals(RationalNumber other){
-    return this.getValue() == other.getValue();
+    return (numerator == other.getNumerator() && denominator == other.getDenominator());
   }
 
 
@@ -51,17 +55,14 @@ public class RationalNumber extends RealNumber
   *@return the value expressed as "3/4" or "8/3"
   */
   public String toString(){
+    this.reduce();
     if (numerator == 0) {
       return "0";
     }
     if (denominator == 1) {
-      return "" + denominator;
+      return "" + numerator;
     }
-    String sign = "";
-    if (numerator * denominator < 0) {
-      sign = "-";
-    }
-    return sign + Math.abs(numerator) + "/" +Math.abs(denominator);
+    return "" + numerator + "/" + denominator;
   }
 
   /**Calculate the GCD of two integers.
@@ -87,10 +88,17 @@ public class RationalNumber extends RealNumber
   *reduced after construction.
   */
   private void reduce(){
-    int factor = gcd(numerator,denominator);
-    numerator /= factor;
-    denominator /= factor;
-  }
+    int originalNumerator = numerator;
+    numerator /= gcd(numerator,denominator);
+    denominator /= gcd(originalNumerator,denominator);
+    if (denominator < 0) {
+        denominator *= -1;
+        numerator *= -1;
+    }
+    if (denominator == 0) {
+        reciprocal();
+    }
+}
   /******************Operations Return a new RationalNumber!!!!****************/
   /**
   *Return a new RationalNumber that is the product of this and the other
@@ -99,7 +107,6 @@ public class RationalNumber extends RealNumber
     int outputTop = this.numerator * other.numerator;
     int outputBot = this.denominator * other.denominator;
     RationalNumber output = new RationalNumber(outputTop,outputBot);
-    output.reduce();
     return output;
   }
 
@@ -107,10 +114,8 @@ public class RationalNumber extends RealNumber
   *Return a new RationalNumber that is the this divided by the other
   */
   public RationalNumber divide(RationalNumber other){
-    RationalNumber output = this.multiply(other.reciprocal());
-    output.reduce();
-    return output;
-  }
+     return new RationalNumber(this.getNumerator() * other.getDenominator(), this.getDenominator() * other.getNumerator());
+ }
 
   /**
   *Return a new RationalNumber that is the sum of this and the other
@@ -119,7 +124,6 @@ public class RationalNumber extends RealNumber
     int outputTop = this.numerator * other.denominator + other.numerator * this.denominator;
     int outputBot = this.denominator * other.denominator;
     RationalNumber output = new RationalNumber(outputTop,outputBot);
-    output.reduce();
     return output;
   }
   /**
@@ -129,7 +133,6 @@ public class RationalNumber extends RealNumber
     int outputTop = this.numerator * other.denominator - other.numerator * this.denominator;
     int outputBot = this.denominator * other.denominator;
     RationalNumber output = new RationalNumber(outputTop,outputBot);
-    output.reduce();
     return output;
   }
 }
